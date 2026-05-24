@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VisorDocs - Panel Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- NAV ADMIN -->
+  <nav class="nav-admin">
+    <div class="nav-inner">
+      <div class="logo">📄 VisorDocs <span class="badge-admin">Admin</span></div>
+      <div class="nav-right">
+        <span id="saludo" class="saludo"></span>
+        <button class="btn-cerrar" onclick="cerrarSesion()">Cerrar sesión</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENIDO ADMIN -->
+  <div class="admin-layout">
+
+    <!-- ═══ PANEL SUBIR PDF ═══ -->
+    <div class="panel">
+      <h2 class="panel-titulo">📤 Subir nuevo documento</h2>
+
+      <div id="uploadMsg" class="upload-msg" style="display:none;"></div>
+
+      <form id="subirForm" onsubmit="subirDocumento(event)">
+
+        <div class="form-group">
+          <label>Título del documento *</label>
+          <input type="text" id="titulo" placeholder="Ej: Revista Escolar N°01" required/>
+        </div>
+
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea id="descripcion" placeholder="Ej: Edición 2025 - primer trimestre" rows="3"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Archivo PDF *</label>
+          <div class="file-drop" id="fileDrop" onclick="document.getElementById('archivoPdf').click()">
+            <div class="file-drop-icon">📄</div>
+            <div class="file-drop-texto" id="fileTexto">
+              Haz clic o arrastra tu PDF aquí
+            </div>
+            <div class="file-drop-sub">Solo archivos .pdf · Máx. 10MB</div>
+            <input
+              type="file"
+              id="archivoPdf"
+              accept=".pdf"
+              style="display:none;"
+              onchange="archivoSeleccionado(this)"
+              required
+            />
+          </div>
+        </div>
+
+        <button type="submit" class="btn-subir" id="btnSubir">
+          <span class="btn-spinner" id="spinnerSubir" style="display:none;"></span>
+          <span id="btnSubirTexto">📤 Subir documento</span>
+        </button>
+
+      </form>
+    </div>
+
+    <!-- ═══ LISTA DE DOCUMENTOS ═══ -->
+    <div class="panel">
+      <h2 class="panel-titulo">📋 Documentos publicados</h2>
+
+      <div id="cargandoAdmin" class="estado-msg-sm">
+        <div class="spinner-grande"></div>
+      </div>
+
+      <div id="sinDocsAdmin" class="estado-msg-sm" style="display:none;">
+        <p>📭 No hay documentos aún.</p>
+      </div>
+
+      <div id="listaAdmin"></div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Proteger la página: si no está logueado, redirige al login
+    if (sessionStorage.getItem('adminLogueado') !== 'true') {
+      window.location.href = 'login.html';
+    }
+
+    // Mostrar saludo
+    const usuario = sessionStorage.getItem('adminUsuario') || 'Admin';
+    document.getElementById('saludo').textContent = '👋 Hola, ' + usuario;
+
+    // Cargar documentos al entrar
+    document.addEventListener('DOMContentLoaded', cargarDocumentosAdmin);
+
+    // ── Drag & Drop en la zona de archivo ──
+    const fileDrop = document.getElementById('fileDrop');
+    fileDrop.addEventListener('dragover',  function(e){ e.preventDefault(); fileDrop.classList.add('drag-over'); });
+    fileDrop.addEventListener('dragleave', function()  { fileDrop.classList.remove('drag-over'); });
+    fileDrop.addEventListener('drop', function(e) {
+      e.preventDefault();
+      fileDrop.classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type === 'application/pdf') {
+        document.getElementById('archivoPdf').files = e.dataTransfer.files;
+        archivoSeleccionado({ files: e.dataTransfer.files });
+      }
+    });
+
+    function archivoSeleccionado(input) {
+      const file = input.files[0];
+      if (file) {
+        document.getElementById('fileTexto').textContent = '✅ ' + file.name;
+        document.getElementById('fileDrop').classList.add('file-ok');
+      }
+    }
+
+    function cerrarSesion() {
+      sessionStorage.clear();
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>

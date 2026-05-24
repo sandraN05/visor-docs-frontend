@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VisorDocs - Documentos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <div class="logo">📄 VisorDocs</div>
+      <a href="login.html" class="btn-nav">🔐 Admin</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>Documentos disponibles</h1>
+    <p>Visualiza o descarga los documentos publicados por el administrador.</p>
+  </section>
+
+  <!-- DOCUMENTOS -->
+  <section class="contenido">
+    <div class="inner">
+
+      <!-- Mensaje cargando -->
+      <div id="cargando" class="estado-msg">
+        <div class="spinner-grande"></div>
+        <p>Cargando documentos...</p>
+      </div>
+
+      <!-- Mensaje sin documentos -->
+      <div id="sinDocs" class="estado-msg" style="display:none;">
+        <div style="font-size:3rem;">📭</div>
+        <p>Aún no hay documentos publicados.</p>
+      </div>
+
+      <!-- Grid de documentos -->
+      <div id="gridDocs" class="docs-grid" style="display:none;"></div>
+
+    </div>
+  </section>
+
+  <!-- MODAL VISOR PDF -->
+  <div id="visor-modal" class="visor-overlay" onclick="cerrarVisor(event)">
+    <div class="visor-contenedor">
+      <div class="visor-header">
+        <span id="visor-titulo">Documento</span>
+        <button class="visor-cerrar" onclick="cerrarVisor()">✕ Cerrar</button>
+      </div>
+      <iframe id="visor-iframe" class="visor-iframe" src=""></iframe>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Al cargar la página, trae los documentos del backend
+    document.addEventListener('DOMContentLoaded', cargarDocumentos);
+  </script>
+</body>
+</html>

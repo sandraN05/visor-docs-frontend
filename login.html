@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VisorDocs - Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body class="body-login">
+
+  <div class="login-card">
+
+    <div class="login-header">
+      <div class="login-logo">📄</div>
+      <h1>VisorDocs</h1>
+      <p>Panel Administrativo</p>
+    </div>
+
+    <!-- Error -->
+    <div class="error-msg" id="errorMsg">
+      ⚠️ Usuario o contraseña incorrectos.
+    </div>
+
+    <!-- Form -->
+    <form id="loginForm" onsubmit="handleLogin(event)">
+
+      <div class="form-group">
+        <label>Usuario</label>
+        <div class="input-wrap">
+          <span class="ico">👤</span>
+          <input type="text" id="usuario" placeholder="Tu usuario" required/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Contraseña</label>
+        <div class="input-wrap">
+          <span class="ico">🔒</span>
+          <input type="password" id="password" placeholder="Tu contraseña" required/>
+          <button type="button" class="toggle-pass" onclick="togglePass()">👁</button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-login" id="btnLogin">
+        <span class="btn-spinner" id="spinner" style="display:none;"></span>
+        <span id="btnTexto">Ingresar</span>
+      </button>
+
+    </form>
+
+    <a href="index.html" class="volver">← Volver al inicio</a>
+
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Si ya está logueado, redirige directo
+    if (sessionStorage.getItem('adminLogueado') === 'true') {
+      window.location.href = 'admin.html';
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const usuario  = document.getElementById('usuario').value.trim();
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
+      const spinner  = document.getElementById('spinner');
+      const btnTexto = document.getElementById('btnTexto');
+      const btnLogin = document.getElementById('btnLogin');
+
+      errorMsg.classList.remove('visible');
+      spinner.style.display = 'inline-block';
+      btnTexto.textContent  = 'Verificando...';
+      btnLogin.disabled     = true;
+
+      // ── TEMPORAL: valida localmente ──
+      // Cuando tengas el backend listo reemplaza esto por:
+      // const res  = await fetch('http://localhost:8080/api/auth/login', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ usuario, password })
+      // });
+      // if (res.ok) { sessionStorage.setItem('adminLogueado','true'); window.location.href='admin.html'; }
+      setTimeout(function () {
+        spinner.style.display = 'none';
+        btnLogin.disabled     = false;
+        btnTexto.textContent  = 'Ingresar';
+
+        if (usuario === 'admin' && password === 'admin123') {
+          sessionStorage.setItem('adminLogueado', 'true');
+          sessionStorage.setItem('adminUsuario', usuario);
+          window.location.href = 'admin.html';
+        } else {
+          errorMsg.classList.add('visible');
+          document.getElementById('password').value = '';
+        }
+      }, 800);
+    }
+
+    function togglePass() {
+      const inp = document.getElementById('password');
+      inp.type  = inp.type === 'password' ? 'text' : 'password';
+    }
+  </script>
+</body>
+</html>

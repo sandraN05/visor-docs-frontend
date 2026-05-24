@@ -4,7 +4,7 @@
 //  por la de tu Spring Boot en Render:
 //  const API = 'https://tu-backend.onrender.com/api';
 // ══════════════════════════════════════════════════
-const API = 'http://localhost:8080/api';
+const API = 'https://visor-docs-backend.onrender.com/api';
 
 // ══════════════════════════════════════════════════
 //  VISOR PDF
